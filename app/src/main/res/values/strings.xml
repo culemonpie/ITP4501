@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Numerical Reasoning IQ Test</string>
+    <string name="tvTitle">Numerical\nReasoning\nIQ Test</string>
+    <string name="tvEmpty">/</string>
+    <string name="btnStart">Start</string>
+    <string name="btnHowToPlay">How to play</string>
+    <string name="btnStatistics">Statistics</string>
+    <string name="btnReturn">Return</string>
+    <string name="tvInstruction">This is an IQ test. You are to answer 5 questions by tapping the most appropriate answer. The faster you answer, the higher marks you get!</string>
+    <string name="imReady">I\'m ready</string>
+    <string name="Loading">Loading...</string>
+    <string name="gameFinished">You have answered %1$d out of %2$d questions correctly!\n\nTime Spent: %3$s</string>
+
+</resources>
