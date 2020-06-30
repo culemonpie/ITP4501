@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#726B6B"
+    android:onClick="btnPause_click"
     tools:context=".GameActivity">
 
-    <Chronometer
+    <TextView
         android:id="@+id/tvTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -117,41 +118,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RadioButton
-            android:id="@+id/rbAnswerA"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onUserAnswerQuestion"
-            android:text="A"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp" />
+        <!--        <RadioButton-->
+        <!--            android:id="@+id/rbAnswerA"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:onClick="onUserAnswerQuestion"-->
+        <!--            android:text="A"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            android:textSize="40sp" />-->
 
-        <RadioButton
-            android:id="@+id/rbAnswerB"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onUserAnswerQuestion"
-            android:text="B"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp" />
+        <!--        <RadioButton-->
+        <!--            android:id="@+id/rbAnswerB"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:onClick="onUserAnswerQuestion"-->
+        <!--            android:text="B"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            android:textSize="40sp" />-->
 
-        <RadioButton
-            android:id="@+id/rbAnswerC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onUserAnswerQuestion"
-            android:text="C"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp" />
+        <!--        <RadioButton-->
+        <!--            android:id="@+id/rbAnswerC"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:onClick="onUserAnswerQuestion"-->
+        <!--            android:text="C"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            android:textSize="40sp" />-->
 
-        <RadioButton
-            android:id="@+id/rbAnswerD"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onUserAnswerQuestion"
-            android:text="D"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp" />
+        <!--        <RadioButton-->
+        <!--            android:id="@+id/rbAnswerD"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:onClick="onUserAnswerQuestion"-->
+        <!--            android:text="D"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            android:textSize="40sp" />-->
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

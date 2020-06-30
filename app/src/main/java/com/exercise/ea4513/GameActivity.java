@@ -3,15 +3,20 @@ package com.exercise.ea4513;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,13 +31,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity {
 
-    long startTime; // The time when the user started to answer a question.
     final int NUMBER_OF_QUESTIONS = Constant.Values.NUMBER_OF_QUESTIONS;
-    ;
+    final int NUMBER_OF_ANSWERS = Constant.Values.NUMBER_OF_ANSWERS;
+
     int currentQuestionIndex = -1; // Which question the user is currently at. Should be an integer between -1 to NUMBER_OF_QUESTIONS-1 (zero based index). -1 means that the questions have not been loaded yet.
     int correctAnswers = 0; //The number of correct answers the user got.
     Response[] responses = new Response[NUMBER_OF_QUESTIONS];
@@ -48,8 +60,11 @@ public class GameActivity extends AppCompatActivity {
     Button btnReady;
     Button btnSkip;
     Button btnNext;
+    ImageButton btnPause;
 
-    Chronometer tvTimer;
+    ScheduledExecutorService scheduler;
+    UITimer uiTimer;
+    TextView tvTimer;
     TextView tvQuestionNumber;
     TextView tvQuestionContent;
     ImageView ivLoading;
@@ -60,6 +75,7 @@ public class GameActivity extends AppCompatActivity {
     SQLiteDatabase db;
     String DB_NAME = Constant.Values.DB_NAME;
     String qs;
+    Cursor cursor;
 
 
     GameQuestion[] gameQuestions = new GameQuestion[NUMBER_OF_QUESTIONS];
@@ -95,6 +111,7 @@ public class GameActivity extends AppCompatActivity {
         btnReady = findViewById(R.id.btnReady);
         btnNext = findViewById(R.id.btnNext);
         btnSkip = findViewById(R.id.btnSkip);
+        btnPause = findViewById(R.id.btnPause);
         ivLoading = findViewById(R.id.ivLoading);
         rgAnswers = findViewById(R.id.rbAnswers);
 
@@ -106,9 +123,27 @@ public class GameActivity extends AppCompatActivity {
         //Setup logic
         setTvQuestionNumber();
         // Loads the json containing the 10 questions.
-        String json_response;
+//        String json_response;
 
-        totalTime = 0;
+        registerForContextMenu(btnPause);
+        uiTimer = new UITimer();
+
+
+        // generate radio buttons
+
+
+
+        for (int i = 0; i < NUMBER_OF_ANSWERS; i++){
+            RadioButton rbAnswer = new RadioButton(this);
+            rbAnswer.setText(i+"" );
+            rbAnswer.setId(View.generateViewId());
+            rbAnswer.setTextSize(40);
+            rbAnswer.setTextColor(Color.WHITE);
+            rbAnswer.setOnClickListener(radioListener);
+            rbAnswer.setWidth(300);
+            rbAnswer.setPadding(0,10,0,0);
+            rgAnswers.addView(rbAnswer);
+        }
 
         try{
             task = new DownloadTask();
@@ -118,8 +153,32 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask(){
+            @Override
+            public void run() {
+//                Log.d("Timer", "Running");
+                uiTimer.update();
+                try {
+                tvTimer.setText(uiTimer.toString());
+                } catch (Exception e){
+                    Log.e("Error", e.getMessage());
+                }
+            };
+        };
+
+        timer.scheduleAtFixedRate(timerTask, 0, 1000);
 
     }
+
+    View.OnClickListener radioListener = new View.OnClickListener(){
+        public void onClick(View v) {
+            onUserAnswerQuestion(v);
+        }
+    };
+
+
+
 
     public void setNextQuestion(View v){
         /*
@@ -154,33 +213,43 @@ public class GameActivity extends AppCompatActivity {
                 radioAnswer.setText(gameQuestions[currentQuestionIndex].answers[i].value + "");
             }
 
-            Log.d("time", tvTimer.getBase()+"" );
-            tvTimer.start();
+            uiTimer.setPaused(false);
         } else {
             //Game ends when all questions are asked
             Intent data = new Intent(this, EndGameActivity.class);
             data.putExtra("correctAnswers", correctAnswers);
             data.putExtra("NUMBER_OF_QUESTIONS", NUMBER_OF_QUESTIONS);
-            long elapsed =  SystemClock.elapsedRealtime() -  tvTimer.getBase();
+            long elapsed =  uiTimer.getTime();
 
             try{
-                db = SQLiteDatabase.openDatabase(Constant.Values.DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-                qs = "CREATE TABLE IF NOT EXISTS \"TestsLog\" (\n" +
-                        "\t\"testNo\"\tINTEGER NOT NULL,\n" +
-                        "\t\"testDate\"\tREAL,\n" +
-                        "\t\"time\"\tINTEGER,\n" +
-                        "\t\"duration\"\tINTEGER,\n" +
-                        "\t\"correctCount\"\tINTEGER,\n" +
-                        "\tPRIMARY KEY(\"testNo\")\n" +
-                        ");\n";
-                db.execSQL(qs);
+                db = SQLiteDatabase.openDatabase(Constant.Values.DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+
+                String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+                String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+                int duration = 10;
+
+                String[] args = {date, time, duration + "", correctAnswers + ""};
+                qs = "INSERT INTO TestsLog(testDate, time, duration, correctCount) VALUES (?, ?, ?, ?);";
+//                cursor = db.execSQL(qs);
+//                cursor = db(qs, args);
+                Log.d("MyDB", qs );
+
+                //todo: Somehow it doesn't work and I have no idea why
+                qs = "SELECT * FROM TestsLog Limit 1;";
+                Log.d("MyDB", qs );
+                cursor = db.rawQuery(qs, null);
+
+                Log.d("MyDB", cursor.getCount() + "" );
+                cursor.moveToFirst();
+//                Log.d("MyDB", cursor.getString(cursor.getColumnIndex("time") ));
                 db.close();
             } catch(SQLiteException e){
+                Log.d("MyDB", e.getMessage() );
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
 
-            data.putExtra("timeSpent", 30 );
+            data.putExtra("timeSpent", uiTimer.time );
             finish();
             startActivity (data);
         }
@@ -195,7 +264,8 @@ public class GameActivity extends AppCompatActivity {
         If the answer is incorrect, set the background color of the view to red.
         Prompt user to click anywhere to proceed to the next question.
          */
-        tvTimer.stop();
+//        tvTimer.stop();
+        uiTimer.setPaused(true);
 
         btnSkip.setVisibility(View.INVISIBLE);
         btnNext.setVisibility(View.VISIBLE);
@@ -207,10 +277,10 @@ public class GameActivity extends AppCompatActivity {
         RadioButton rbAnswer = (RadioButton)v;
         boolean isCorrect = rbAnswer.getText().toString().equals(gameQuestions[currentQuestionIndex].correctAnswer+"");
 
-        tvTimer.getBase();
-        long timeSpent = tvTimer.getBase();
-        Log.d("Time spent", timeSpent + "" );
-        responses[currentQuestionIndex] = new Response(timeSpent, isCorrect);
+//        tvTimer.getBase();
+//        long timeSpent = tvTimer.getBase();
+//        Log.d("Time spent", timeSpent + "" );
+        responses[currentQuestionIndex] = new Response(0, isCorrect); //todo: Remove time
 
         try{
 
@@ -226,12 +296,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-    public void setTvQuestion(){
-
-    }
-
-
     //@android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public class DownloadTask extends AsyncTask<String, Integer, String> {
         @Override
@@ -244,6 +308,7 @@ public class GameActivity extends AppCompatActivity {
 
                 url = new URL(values[0]);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setConnectTimeout(5000);
                 con.setRequestMethod("GET");
                 con.connect();
 
@@ -324,5 +389,13 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void btnPause_click(View v){
+        Log.d("Button", "Clicked");
+    }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        Log.d("Button", "120kg");
+    }
 }

@@ -14,7 +14,8 @@ public class EndGameActivity extends AppCompatActivity {
     Button btnReturn;
     int correctAnswers;
     final int NUMBER_OF_QUESTIONS = Constant.Values.NUMBER_OF_QUESTIONS;
-    String timeSpent;
+    int timeSpent;
+    String timeSpentToString;
 
     TextView tvEndGame;
 
@@ -28,8 +29,9 @@ public class EndGameActivity extends AppCompatActivity {
 
         Intent data = getIntent();
         correctAnswers = data.getIntExtra("correctAnswers" , 0);
-        timeSpent = data.getIntExtra("timeSpent", 0) + "";
-        String tvEndGameMessage = getResources().getString(R.string.gameFinished, correctAnswers, NUMBER_OF_QUESTIONS, timeSpent);
+        timeSpent = data.getIntExtra("timeSpent", 0);
+        timeSpentToString = String.format("%02d:%02d", timeSpent/60, timeSpent%60);
+        String tvEndGameMessage = getResources().getString(R.string.gameFinished, correctAnswers, NUMBER_OF_QUESTIONS, timeSpentToString);
 
         tvEndGame.setText(tvEndGameMessage);
 

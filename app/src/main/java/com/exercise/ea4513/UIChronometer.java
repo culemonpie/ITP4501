@@ -8,6 +8,7 @@ import android.widget.Chronometer;
 public class UIChronometer extends Chronometer {
     /*
     Subclassing element chronometer with an extra function getElapsed()
+    No longer used
      */
 //    int seconds;
 

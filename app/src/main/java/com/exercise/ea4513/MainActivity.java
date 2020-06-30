@@ -52,7 +52,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnStatistics_click(View v){
-
+        Intent howToPlayIntent = new Intent(this, Statistics.class);
+        startActivity(howToPlayIntent);
     }
+    public void btnSettings_click(View v){
+        Intent howToPlayIntent = new Intent(this, Settings.class);
+        startActivity(howToPlayIntent);
+    }
+
+
 
 }
