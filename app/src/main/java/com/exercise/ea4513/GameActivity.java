@@ -1,7 +1,5 @@
 package com.exercise.ea4513;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,19 +7,18 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,9 +33,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -230,17 +225,15 @@ public class GameActivity extends AppCompatActivity {
 
                 String[] args = {date, time, duration + "", correctAnswers + ""};
                 qs = "INSERT INTO TestsLog(testDate, time, duration, correctCount) VALUES (?, ?, ?, ?);";
-//                cursor = db.execSQL(qs);
-//                cursor = db(qs, args);
-                Log.d("MyDB", qs );
+                db.execSQL(qs, args);
 
                 //todo: Somehow it doesn't work and I have no idea why
-                qs = "SELECT * FROM TestsLog Limit 1;";
-                Log.d("MyDB", qs );
-                cursor = db.rawQuery(qs, null);
-
-                Log.d("MyDB", cursor.getCount() + "" );
-                cursor.moveToFirst();
+//                qs = "SELECT * FROM TestsLog Limit 1;";
+//                Log.d("MyDB", qs );
+//                cursor = db.rawQuery(qs, null);
+//
+//                Log.d("MyDB", cursor.getCount() + "" );
+//                cursor.moveToFirst();
 //                Log.d("MyDB", cursor.getString(cursor.getColumnIndex("time") ));
                 db.close();
             } catch(SQLiteException e){
