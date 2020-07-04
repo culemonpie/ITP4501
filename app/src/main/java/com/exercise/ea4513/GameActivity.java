@@ -1,5 +1,6 @@
 package com.exercise.ea4513;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -216,18 +217,26 @@ public class GameActivity extends AppCompatActivity {
             data.putExtra("NUMBER_OF_QUESTIONS", NUMBER_OF_QUESTIONS);
             long elapsed =  uiTimer.getTime();
 
-            try{
+            try {
                 db = SQLiteDatabase.openDatabase(Constant.Values.DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
 
                 String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                 String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
-                int duration = 10;
 
-                String[] args = {date, time, duration + "", correctAnswers + ""};
-                qs = "INSERT INTO TestsLog(testDate, time, duration, correctCount) VALUES (?, ?, ?, ?);";
-                db.execSQL(qs, args);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("testDate", date);
+                contentValues.put("time", time);
+                contentValues.put("duration", uiTimer.getTime());
+                contentValues.put("correctCount", correctAnswers);
+                contentValues.put("numberOfQuestions", NUMBER_OF_QUESTIONS);
+                contentValues.put("numberOfAnswers", NUMBER_OF_ANSWERS);
 
-                //todo: Somehow it doesn't work and I have no idea why
+                long id = db.insert("TestsLog", null, contentValues);
+
+                Log.d("MyDB", "Inserted into row " + id);
+                // qs = "INSERT INTO TestsLog(testDate, time, duration, correctCount) VALUES (?, ?, ?, ?);";
+                // db.execSQL(qs, args);
+
 //                qs = "SELECT * FROM TestsLog Limit 1;";
 //                Log.d("MyDB", qs );
 //                cursor = db.rawQuery(qs, null);
@@ -332,7 +341,7 @@ public class GameActivity extends AppCompatActivity {
             Prompt user to click start for the first question.
             */
             try {
-                // load json result
+                // load json resultR
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray questions = jsonObject.getJSONArray("questions");
 
@@ -356,7 +365,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
 
-                //start
+                //Deserialize and convert data into java
                 for (int i = 0; i < NUMBER_OF_QUESTIONS; i++){
                     //enter the questions into database
                     int index = questions_index[i]; //Questions are shuffled
