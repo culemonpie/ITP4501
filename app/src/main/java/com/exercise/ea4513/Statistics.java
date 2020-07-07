@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,8 @@ public class Statistics extends AppCompatActivity {
     SQLiteDatabase db;
     Cursor cursor;
     TextView tvOutput;
+    StatChartView statChartView;
+    LinearLayout layoutStatistics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,17 @@ public class Statistics extends AppCompatActivity {
 
 
         db.close();
+
+        layoutStatistics = findViewById(R.id.layoutStatistics);
+        statChartView = new StatChartView(Statistics.this);
+//        ViewGroup.LayoutParams params = layoutStatistics.getLayoutParams();
+//        params.height = 100;
+//        statChartView.setLayoutParams(params);
+//
+//        statChartView.getLayoutParams().height = 100;
+
+        layoutStatistics.addView(statChartView, 1);
+
 
     }
 
