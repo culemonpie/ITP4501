@@ -2,10 +2,12 @@ package com.exercise.ea4513;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,13 +40,15 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class GameActivity extends AppCompatActivity {
 
-    final int NUMBER_OF_QUESTIONS = Constant.Values.NUMBER_OF_QUESTIONS;
+//    final int numberOfQuestions = Constant.Values.NUMBER_OF_QUESTIONS;
+    int numberOfQuestions;
     final int NUMBER_OF_ANSWERS = Constant.Values.NUMBER_OF_ANSWERS;
 
     int currentQuestionIndex = -1; // Which question the user is currently at. Should be an integer between -1 to NUMBER_OF_QUESTIONS-1 (zero based index). -1 means that the questions have not been loaded yet.
     int correctAnswers = 0; //The number of correct answers the user got.
-    Response[] responses = new Response[NUMBER_OF_QUESTIONS];
+    Response[] responses;
 
+    Boolean switchSound;
 
     // Background colors that are used in the view during different situations
     int NORMAL_COLOR = 0xFF726B6B;
@@ -73,8 +77,10 @@ public class GameActivity extends AppCompatActivity {
     String qs;
     Cursor cursor;
 
+//    final MediaPlayer correctSound = MediaPlayer.create(GameActivity.this, R.raw.correct);
+//    final MediaPlayer incorrectSound = MediaPlayer.create(GameActivity.this, R.raw.incorrect);
 
-    GameQuestion[] gameQuestions = new GameQuestion[NUMBER_OF_QUESTIONS];
+    GameQuestion[] gameQuestions;
 
     public class Response{
         long time_spent;
@@ -88,7 +94,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void setTvQuestionNumber() {
-        String txt = String.format("%d of %d", currentQuestionIndex + 1, NUMBER_OF_QUESTIONS);
+        String txt = String.format("%d of %d", currentQuestionIndex + 1, numberOfQuestions);
         tvQuestionNumber.setText(txt);
     }
 
@@ -115,6 +121,13 @@ public class GameActivity extends AppCompatActivity {
         btnReady.setVisibility(View.INVISIBLE);
         btnSkip.setVisibility(View.INVISIBLE);
         rgAnswers.setVisibility(View.INVISIBLE);
+
+        //load preferences
+        SharedPreferences settings = getSharedPreferences("pref", MODE_PRIVATE);
+        numberOfQuestions = settings.getInt("NUMBER_OF_QUESTIONS", 5);
+        switchSound = settings.getBoolean("hasSound", false);
+        responses = new Response[numberOfQuestions];
+        gameQuestions = new GameQuestion[numberOfQuestions];
 
         //Setup logic
         setTvQuestionNumber();
@@ -165,6 +178,10 @@ public class GameActivity extends AppCompatActivity {
 
         timer.scheduleAtFixedRate(timerTask, 0, 1000);
 
+        db = SQLiteDatabase.openDatabase(Constant.Values.DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+        qs = "DELETE FROM QuestionsLog";
+        cursor = db.rawQuery(qs, null);
+
     }
 
     View.OnClickListener radioListener = new View.OnClickListener(){
@@ -199,7 +216,7 @@ public class GameActivity extends AppCompatActivity {
 
         currentQuestionIndex++;
 
-        if (currentQuestionIndex < NUMBER_OF_QUESTIONS) {
+        if (currentQuestionIndex < numberOfQuestions) {
             setTvQuestionNumber();
             tvQuestionContent.setText(gameQuestions[currentQuestionIndex].content);
             actGame.setBackgroundColor(NORMAL_COLOR);
@@ -214,11 +231,10 @@ public class GameActivity extends AppCompatActivity {
             //Game ends when all questions are asked
             Intent data = new Intent(this, EndGameActivity.class);
             data.putExtra("correctAnswers", correctAnswers);
-            data.putExtra("NUMBER_OF_QUESTIONS", NUMBER_OF_QUESTIONS);
+            data.putExtra("NUMBER_OF_QUESTIONS", numberOfQuestions);
             long elapsed =  uiTimer.getTime();
 
             try {
-                db = SQLiteDatabase.openDatabase(Constant.Values.DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
 
                 String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                 String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
@@ -228,7 +244,7 @@ public class GameActivity extends AppCompatActivity {
                 contentValues.put("time", time);
                 contentValues.put("duration", uiTimer.getTime());
                 contentValues.put("correctCount", correctAnswers);
-                contentValues.put("numberOfQuestions", NUMBER_OF_QUESTIONS);
+                contentValues.put("numberOfQuestions", numberOfQuestions);
                 contentValues.put("numberOfAnswers", NUMBER_OF_ANSWERS);
 
                 long id = db.insert("TestsLog", null, contentValues);
@@ -244,7 +260,7 @@ public class GameActivity extends AppCompatActivity {
 //                Log.d("MyDB", cursor.getCount() + "" );
 //                cursor.moveToFirst();
 //                Log.d("MyDB", cursor.getString(cursor.getColumnIndex("time") ));
-                db.close();
+//                db.close();
             } catch(SQLiteException e){
                 Log.d("MyDB", e.getMessage() );
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -285,17 +301,35 @@ public class GameActivity extends AppCompatActivity {
         responses[currentQuestionIndex] = new Response(0, isCorrect); //todo: Remove time
 
         try{
-
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("Question", gameQuestions[currentQuestionIndex].content);
+            contentValues.put("yourAnswer", rbAnswer.getText().toString());
+            contentValues.put("isCorrect", isCorrect);
+            long id = db.insert("QuestionsLog", null, contentValues);
+            Log.d("MyDB", "Inserted into " + id);
         }catch (SQLiteException e){
-
+            Log.d("MyDB", e.getMessage());
         }
 
         if (isCorrect){
             actGame.setBackgroundColor(CORRECT_COLOR);
             correctAnswers++;
+            if (true || switchSound){
+//            correctSound.start();
         } else{
             actGame.setBackgroundColor(INCORRECT_COLOR);
+            }
+            if (true || switchSound){
+//            incorrectSound.start();
+            }
         }
+
+        try{
+
+        } catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
     //@android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
@@ -346,12 +380,12 @@ public class GameActivity extends AppCompatActivity {
                 JSONArray questions = jsonObject.getJSONArray("questions");
 
                 //shuffle questions and pick 5 randomly
-                int[] questions_index = new int[NUMBER_OF_QUESTIONS];
+                int[] questions_index = new int[numberOfQuestions];
                 int count = 0;
 
                 Random random = new Random();
 
-                while (count < NUMBER_OF_QUESTIONS){
+                while (count < numberOfQuestions){
                     int question_index = random.nextInt(questions.length());
                     boolean is_duplicate = false;
                     for (int i = 0; i < count; i++){
@@ -366,7 +400,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 //Deserialize and convert data into java
-                for (int i = 0; i < NUMBER_OF_QUESTIONS; i++){
+                for (int i = 0; i < numberOfQuestions; i++){
                     //enter the questions into database
                     int index = questions_index[i]; //Questions are shuffled
                     JSONObject questionSet = questions.getJSONObject(index);
@@ -376,7 +410,7 @@ public class GameActivity extends AppCompatActivity {
                     gameQuestions[i] = gameQuestion;
                 }
 
-                for (int i = 0; i < NUMBER_OF_QUESTIONS; i++){
+                for (int i = 0; i < numberOfQuestions; i++){
                     //print the questions
                     Log.d("JSON", String.format("%d: %s - %s", i, gameQuestions[i].content, gameQuestions[i].toString()));
                 }
@@ -398,6 +432,11 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        Log.d("Button", "120kg");
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        db.close();
     }
 }

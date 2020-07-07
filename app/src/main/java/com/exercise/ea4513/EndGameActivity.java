@@ -3,8 +3,8 @@ package com.exercise.ea4513;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,7 +13,7 @@ public class EndGameActivity extends AppCompatActivity {
 
     Button btnReturn;
     int correctAnswers;
-    final int NUMBER_OF_QUESTIONS = Constant.Values.NUMBER_OF_QUESTIONS;
+    int numberOfQuestions;
     int timeSpent;
     String timeSpentToString;
 
@@ -27,11 +27,14 @@ public class EndGameActivity extends AppCompatActivity {
         btnReturn = findViewById(R.id.btnReturn);
         tvEndGame = findViewById(R.id.tvEndGame);
 
+        SharedPreferences settings = getSharedPreferences("pref", MODE_PRIVATE);
+        numberOfQuestions = settings.getInt("NUMBER_OF_QUESTIONS", 5);
+
         Intent data = getIntent();
         correctAnswers = data.getIntExtra("correctAnswers" , 0);
         timeSpent = data.getIntExtra("timeSpent", 0);
         timeSpentToString = String.format("%02d:%02d", timeSpent/60, timeSpent%60);
-        String tvEndGameMessage = getResources().getString(R.string.gameFinished, correctAnswers, NUMBER_OF_QUESTIONS, timeSpentToString);
+        String tvEndGameMessage = getResources().getString(R.string.gameFinished, correctAnswers, numberOfQuestions, timeSpentToString);
 
         tvEndGame.setText(tvEndGameMessage);
 

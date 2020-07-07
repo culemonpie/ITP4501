@@ -5,49 +5,47 @@
     android:id="@+id/layoutStatistics"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#009688"
+    android:background="#3F51B5"
     android:orientation="vertical"
+    android:paddingLeft="40sp"
+    android:paddingRight="40sp"
     tools:context=".Statistics">
 
     <Button
         android:id="@+id/btnReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40sp"
-        android:layout_marginTop="40sp"
+        android:layout_marginTop="40dp"
         android:background="@android:color/white"
         android:onClick="btnReturn_click"
-        android:text="Button"
-        tools:text="@string/btnReturn" />
+        android:text="@string/btnReturn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchSound"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40sp"
         android:layout_marginTop="20sp"
-        android:layout_marginRight="40sp"
-        android:text="Switch"
+        android:text="@string/switchSound"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
 
-    <Switch
-        android:id="@+id/switch2"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40sp"
-        android:layout_marginRight="40sp"
-        android:text="Switch"
+        android:layout_marginTop="10sp"
+        android:text="@string/tvNumQuestions"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/editTextNumberSigned2"
+        android:id="@+id/etNumberOfQuestions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="40sp"
         android:ems="10"
-        android:hint="@string/tvNumQuestions"
-        android:inputType="numberSigned" />
+        android:inputType="numberSigned"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

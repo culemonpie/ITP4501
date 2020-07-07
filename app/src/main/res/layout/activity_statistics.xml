@@ -4,37 +4,56 @@
     android:id="@+id/layoutStatistics"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#009688"
+    android:background="#B1B5B4"
     android:orientation="vertical"
     tools:context=".Statistics">
 
-    <Button
-        android:id="@+id/btnReturn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40sp"
-        android:layout_marginTop="40sp"
-        android:background="@android:color/white"
-        android:onClick="btnReturn_click"
-        android:text="@string/btnReturn" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20sp"
+        android:layout_marginTop="40sp"
+        android:layout_marginRight="20sp"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <Button
+            android:id="@+id/btnReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="40sp"
+            android:layout_marginRight="10sp"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:onClick="btnReturn_click"
+            android:text="@string/btnReturn" />
 
-            <TextView
-                android:id="@+id/tvOutput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="40sp" />
-        </LinearLayout>
-    </ScrollView>
+        <Button
+            android:id="@+id/btnQuestionsLog"
+            android:layout_width="wrap_content"
+            android:layout_height="40sp"
+            android:layout_marginRight="10sp"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:onClick="btnQuestionsLog_click"
+            android:text="@string/btnQuestionsLog" />
+
+        <Button
+            android:id="@+id/btnTestsLog"
+            android:layout_width="wrap_content"
+            android:layout_height="40sp"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:onClick="btnTestsLog_click"
+            android:text="@string/btnTestsLog" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginRight="40sp"
+        android:text="@string/tvStatInstruction" />
 
 </LinearLayout>
