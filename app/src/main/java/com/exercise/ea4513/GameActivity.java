@@ -145,17 +145,9 @@ public class GameActivity extends AppCompatActivity {
 
         //Setup logic
         setTvQuestionNumber();
-        // Loads the json containing the 10 questions.
-//        String json_response;
-
-//        registerForContextMenu(btnPause);
         uiTimer = new UITimer();
 
-
         // generate radio buttons
-
-
-
         for (int i = 0; i < NUMBER_OF_ANSWERS; i++){
             RadioButton rbAnswer = new RadioButton(this);
             rbAnswer.setText(i+"" );
@@ -180,7 +172,6 @@ public class GameActivity extends AppCompatActivity {
         TimerTask timerTask = new TimerTask(){
             @Override
             public void run() {
-//                Log.d("Timer", "Running");
                 uiTimer.update();
                 try {
                     tvTimer.setText(uiTimer.toString());
@@ -264,22 +255,10 @@ public class GameActivity extends AppCompatActivity {
                 long id = db.insert("TestsLog", null, contentValues);
 
                 Log.d("MyDB", "Inserted into row " + id);
-                // qs = "INSERT INTO TestsLog(testDate, time, duration, correctCount) VALUES (?, ?, ?, ?);";
-                // db.execSQL(qs, args);
-
-//                qs = "SELECT * FROM TestsLog Limit 1;";
-//                Log.d("MyDB", qs );
-//                cursor = db.rawQuery(qs, null);
-//
-//                Log.d("MyDB", cursor.getCount() + "" );
-//                cursor.moveToFirst();
-//                Log.d("MyDB", cursor.getString(cursor.getColumnIndex("time") ));
-//                db.close();
             } catch(SQLiteException e){
                 Log.d("MyDB", e.getMessage() );
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
-
 
             data.putExtra("timeSpent", uiTimer.time );
             finish();
@@ -305,13 +284,8 @@ public class GameActivity extends AppCompatActivity {
             rgAnswers.getChildAt(i).setEnabled(false);
         }
 
-        //for now, we will use a random variable to determine if it's right
         RadioButton rbAnswer = (RadioButton)v;
         boolean isCorrect = rbAnswer.getText().toString().equals(gameQuestions[currentQuestionIndex].correctAnswer+"");
-
-//        tvTimer.getBase();
-//        long timeSpent = tvTimer.getBase();
-//        Log.d("Time spent", timeSpent + "" );
         responses[currentQuestionIndex] = new Response(0, isCorrect); //todo: Remove time
 
         try{
@@ -329,14 +303,12 @@ public class GameActivity extends AppCompatActivity {
             actGame.setBackgroundColor(CORRECT_COLOR);
             correctAnswers++;
             if (switchSound) {
-//            correctSound.start();
                 soundPool.play(correctSound, 1, 1, 0, 0, 1);
 
             }
         } else {
             actGame.setBackgroundColor(INCORRECT_COLOR);
             if (switchSound) {
-//            incorrectSound.start();
                 soundPool.play(incorrectSound, 1, 1, 0, 0, 1);
             }
         }
@@ -349,7 +321,6 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    //@android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public class DownloadTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... values){
