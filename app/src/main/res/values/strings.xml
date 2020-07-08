@@ -10,6 +10,7 @@
     <string name="tvInstruction">This is an IQ test. You are to answer 5 questions by tapping the most appropriate answer. \nYou may choose the number of questions you wish to answers in settings.\n\n\nCreated by: Ho Sze King\nDate: 2020-07-11\nITP4501 EA Assignment</string>
     <string name="imReady">I\'m ready</string>
     <string name="Loading">Loading...</string>
+    <string name="tvReady">Please click the I\'m ready button to start!</string>
     <string name="gameFinished">You have answered %1$d out of %2$d questions correctly!\n\nTime Spent: %3$s</string>
     <string name="tvNumQuestions">Number of Questions (2 - 10)</string>
     <string name="menuExit">Exit</string>

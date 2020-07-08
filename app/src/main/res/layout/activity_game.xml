@@ -21,40 +21,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnPause"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
-        android:background="#FFFFFF"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
-        android:src="@drawable/ic_pause_black_24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tvQuestionNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="40dp"
         android:text="@string/tvEmpty"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/btnPause"
-        app:layout_constraintTop_toBottomOf="@+id/btnPause" />
-
-    <Button
-        android:id="@+id/btnSkip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="50dp"
-        android:onClick="onUserAnswerQuestion"
-        android:text="Skip"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvQuestionContent"
@@ -75,11 +52,12 @@
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="188dp"
+        android:layout_marginBottom="50dp"
         android:onClick="setNextQuestion"
         android:text="Next"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/btnSkip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView

@@ -7,14 +7,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
-import android.media.MediaPlayer;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -36,11 +36,10 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class GameActivity extends AppCompatActivity {
 
-//    final int numberOfQuestions = Constant.Values.NUMBER_OF_QUESTIONS;
+    //    final int numberOfQuestions = Constant.Values.NUMBER_OF_QUESTIONS;
     int numberOfQuestions;
     final int NUMBER_OF_ANSWERS = Constant.Values.NUMBER_OF_ANSWERS;
 
@@ -58,11 +57,11 @@ public class GameActivity extends AppCompatActivity {
     DownloadTask task;
 
     Button btnReady;
-    Button btnSkip;
+    //    Button btnSkip;
     Button btnNext;
-    ImageButton btnPause;
+//    ImageButton btnPause;
 
-    ScheduledExecutorService scheduler;
+    SoundPool soundPool;
     UITimer uiTimer;
     TextView tvTimer;
     TextView tvQuestionNumber;
@@ -80,13 +79,15 @@ public class GameActivity extends AppCompatActivity {
 //    final MediaPlayer correctSound = MediaPlayer.create(GameActivity.this, R.raw.correct);
 //    final MediaPlayer incorrectSound = MediaPlayer.create(GameActivity.this, R.raw.incorrect);
 
+    int correctSound, incorrectSound;
+
     GameQuestion[] gameQuestions;
 
-    public class Response{
+    public class Response {
         long time_spent;
         boolean isCorrect;
 
-        public Response(long t, boolean c){
+        public Response(long t, boolean c) {
             time_spent = t;
             isCorrect = c;
         }
@@ -112,15 +113,28 @@ public class GameActivity extends AppCompatActivity {
 
         btnReady = findViewById(R.id.btnReady);
         btnNext = findViewById(R.id.btnNext);
-        btnSkip = findViewById(R.id.btnSkip);
-        btnPause = findViewById(R.id.btnPause);
+//        btnSkip = findViewById(R.id.btnSkip);
+//        btnPause = findViewById(R.id.btnPause);
         ivLoading = findViewById(R.id.ivLoading);
         rgAnswers = findViewById(R.id.rbAnswers);
 
         //Setup the UI elements
         btnReady.setVisibility(View.INVISIBLE);
-        btnSkip.setVisibility(View.INVISIBLE);
+//        btnSkip.setVisibility(View.INVISIBLE);
         rgAnswers.setVisibility(View.INVISIBLE);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(6)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        correctSound = soundPool.load(this, R.raw.correct, 1);
+        incorrectSound = soundPool.load(this, R.raw.incorrect, 1);
+
 
         //load preferences
         SharedPreferences settings = getSharedPreferences("pref", MODE_PRIVATE);
@@ -134,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
         // Loads the json containing the 10 questions.
 //        String json_response;
 
-        registerForContextMenu(btnPause);
+//        registerForContextMenu(btnPause);
         uiTimer = new UITimer();
 
 
@@ -169,7 +183,7 @@ public class GameActivity extends AppCompatActivity {
 //                Log.d("Timer", "Running");
                 uiTimer.update();
                 try {
-                tvTimer.setText(uiTimer.toString());
+                    tvTimer.setText(uiTimer.toString());
                 } catch (Exception e){
                     Log.e("Error", e.getMessage());
                 }
@@ -285,7 +299,7 @@ public class GameActivity extends AppCompatActivity {
 //        tvTimer.stop();
         uiTimer.setPaused(true);
 
-        btnSkip.setVisibility(View.INVISIBLE);
+//        btnSkip.setVisibility(View.INVISIBLE);
         btnNext.setVisibility(View.VISIBLE);
         for (int i = 0; i < rgAnswers.getChildCount(); i++) {
             rgAnswers.getChildAt(i).setEnabled(false);
@@ -311,16 +325,19 @@ public class GameActivity extends AppCompatActivity {
             Log.d("MyDB", e.getMessage());
         }
 
-        if (isCorrect){
+        if (isCorrect) {
             actGame.setBackgroundColor(CORRECT_COLOR);
             correctAnswers++;
-            if (true || switchSound){
+            if (switchSound) {
 //            correctSound.start();
-        } else{
-            actGame.setBackgroundColor(INCORRECT_COLOR);
+                soundPool.play(correctSound, 1, 1, 0, 0, 1);
+
             }
-            if (true || switchSound){
+        } else {
+            actGame.setBackgroundColor(INCORRECT_COLOR);
+            if (switchSound) {
 //            incorrectSound.start();
+                soundPool.play(incorrectSound, 1, 1, 0, 0, 1);
             }
         }
 
@@ -418,7 +435,7 @@ public class GameActivity extends AppCompatActivity {
                 Log.d("JSON", "COMPLETED");
                 ivLoading.setVisibility(View.INVISIBLE);
                 btnReady.setVisibility(View.VISIBLE);
-                tvQuestionContent.setText("Please click the I\'m ready button to start");
+                tvQuestionContent.setText(R.string.tvReady);
             } catch (Exception e){
                 Log.e("JSON", e.toString());
             }

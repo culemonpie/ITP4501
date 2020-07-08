@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,10 +34,6 @@ public class Statistics extends AppCompatActivity {
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         statChartView.setLayoutParams(params);
-//
-//        statChartView.getLayoutParams().height = 100;
-
-        loadDB();
 
         layoutStatistics.addView(statChartView, 2);
 
@@ -51,8 +46,6 @@ public class Statistics extends AppCompatActivity {
         String op = "";
         int i = 0;
         while (cursor.moveToNext()) {
-//            i++;
-//            op += i + "\n";
             int testNo = cursor.getInt(cursor.getColumnIndex("testNo"));
             String testDate = cursor.getString(cursor.getColumnIndex("testDate"));
             String duration = cursor.getString(cursor.getColumnIndex("duration"));
