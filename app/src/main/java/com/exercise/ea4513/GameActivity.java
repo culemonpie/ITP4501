@@ -95,7 +95,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void setTvQuestionNumber() {
-        String txt = String.format("%d of %d", currentQuestionIndex + 1, numberOfQuestions);
+        String txt = getResources().getString(R.string.xOfx, currentQuestionIndex + 1, numberOfQuestions);
+
+//        String txt = String.format("%d of %d", currentQuestionIndex + 1, numberOfQuestions);
         tvQuestionNumber.setText(txt);
     }
 
@@ -178,7 +180,7 @@ public class GameActivity extends AppCompatActivity {
                 } catch (Exception e){
                     Log.e("Error", e.getMessage());
                 }
-            };
+            }
         };
 
         timer.scheduleAtFixedRate(timerTask, 0, 1000);
@@ -313,11 +315,6 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        try{
-
-        } catch (Exception e){
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
 
     }
 
@@ -326,8 +323,8 @@ public class GameActivity extends AppCompatActivity {
         protected String doInBackground(String... values){
             try {
                 Log.d("JSON", "start");
-                InputStream inputStream = null;
-                URL url = null;
+                InputStream inputStream;
+                URL url;
                 String result = "";
 
                 url = new URL(values[0]);

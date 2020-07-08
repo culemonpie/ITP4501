@@ -43,7 +43,7 @@ public class Statistics extends AppCompatActivity {
     public void loadDB(){
         cursor = db.rawQuery("Select *, (1.0 * correctCount / numberOfQuestions) as percentage from TestsLog", null);
 
-        String op = "";
+        String op = "testNo / testDate / duration / correct count / number of questions / percentage\n";
         int i = 0;
         while (cursor.moveToNext()) {
             int testNo = cursor.getInt(cursor.getColumnIndex("testNo"));
@@ -81,7 +81,7 @@ public class Statistics extends AppCompatActivity {
     public void btnQuestionsLog_click(View v){
         cursor = db.rawQuery("Select * from QuestionsLog", null);
 
-        String op = "";
+        String op = "questionNo / question / yourAnswer / isCorrect";
         int i = 0;
         while (cursor.moveToNext()) {
             int questionNo = cursor.getInt(cursor.getColumnIndex("questionNo"));

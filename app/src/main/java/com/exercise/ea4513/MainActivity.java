@@ -1,7 +1,6 @@
 package com.exercise.ea4513;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
@@ -23,14 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Locale hk = new Locale("zh_HK");
-        Locale.setDefault(hk);
-
-        Configuration config = getBaseContext().getResources().getConfiguration();
-        config.locale = hk;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
 
         Log.d("Locale", Locale.getDefault().toLanguageTag());
 

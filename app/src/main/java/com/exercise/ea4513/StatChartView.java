@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.View;
 
 import java.util.Random;
@@ -20,6 +19,7 @@ public class StatChartView extends View {
     SQLiteDatabase db;
     Cursor cursor;
     String sql;
+    Paint paint;
 
 //    double[] sampleData = {1.0, 0.4, 0.35, 0.89, 0.1};
     Vector<Double> results;
@@ -28,7 +28,7 @@ public class StatChartView extends View {
         super(context);
         random = new Random();
         db = SQLiteDatabase.openDatabase(Constant.Values.DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        sql = "SELECT (1.0 * correctCount / numberOfQuestions) AS percentage FROM TestsLog order by testNo desc limit 10";
+        sql = "SELECT (1.0 * correctCount / numberOfQuestions) AS percentage FROM TestsLog order by testNo desc limit 5";
         cursor = db.rawQuery(sql, null);
 
         results = new Vector<Double>();
@@ -37,7 +37,7 @@ public class StatChartView extends View {
             results.add(pivot);
         }
         db.close();
-
+        paint = new Paint();
     }
 
     @Override
@@ -53,14 +53,14 @@ public class StatChartView extends View {
 
         int numberOfBars = results.size();
 
-        float baseHeight = canvas.getHeight() - margin_top;
+        float baseHeight = getHeight() - margin_top;
 //        float baseWidth = screen_margin;
-        float chartWidth = canvas.getWidth() - margin_left - margin_right;
+        float chartWidth = getWidth() - margin_left - margin_right;
         float barHeight = baseHeight - screen_margin * 2 + zero_padding;
         float barWidth = (chartWidth - (marginX * (numberOfBars+1))) / numberOfBars;
 
 
-        Paint paint = new Paint();
+
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(3);
         paint.setTextSize(40);
@@ -71,12 +71,13 @@ public class StatChartView extends View {
         canvas.drawText("0%", 60, baseHeight, paint);
         canvas.drawText("100%", 60, baseHeight - barHeight, paint);
 
-        for (int i = 0; i < numberOfBars; i++){
+        for (int i = 0; i < numberOfBars; i++) {
             int randomColor = 0xFF000000 + random.nextInt(0xFFFFFF);
             paint.setColor(randomColor);
-            float left = margin_left + margin_bar + margin_bar * (i+1) + barWidth * (i) ;
-            float top = (float)(baseHeight - barHeight * results.get(i) - zero_padding);
-            float right = margin_left + margin_bar * (i+1) + barWidth * (i + 1);
+            int j = numberOfBars - i - 1;
+            float left = margin_left + margin_bar + margin_bar * (j + 1) + barWidth * (j);
+            float top = (float) (baseHeight - barHeight * results.get(j) - zero_padding);
+            float right = margin_left + margin_bar * (j + 1) + barWidth * (j + 1);
             float bottom = baseHeight;
             canvas.drawRect(left, top, right, bottom, paint);
         }

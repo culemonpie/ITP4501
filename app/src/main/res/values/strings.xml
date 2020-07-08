@@ -7,16 +7,17 @@
     <string name="btnStatistics">Statistics</string>
     <string name="btnSettings">Settings</string>
     <string name="btnReturn">Return</string>
-    <string name="tvInstruction">This is an IQ test. You are to answer 5 questions by tapping the most appropriate answer. \nYou may choose the number of questions you wish to answers in settings.\n\n\nCreated by: Ho Sze King\nDate: 2020-07-11\nITP4501 EA Assignment</string>
+    <string name="tvInstruction">This is an IQ test. You are to answer 5 questions by tapping the most appropriate answer. \nYou may choose the number of questions you wish to answers in settings.\n\n\nCreated by: Ho Sze King\nDate: 2020–07–11\nITP4501 EA Assignment</string>
     <string name="imReady">I\'m ready</string>
     <string name="Loading">Loading...</string>
     <string name="tvReady">Please click the I\'m ready button to start!</string>
     <string name="gameFinished">You have answered %1$d out of %2$d questions correctly!\n\nTotal Time Spent\n%3$s\n\nAverage time spent on each question\n%4$.1f seconds</string>
-    <string name="tvNumQuestions">Number of Questions (2 - 10)</string>
+    <string name="tvNumQuestions">Number of Questions (2 – 10)</string>
     <string name="menuExit">Exit</string>
-    <string name="tvStatInstruction">Below is the performance of your 10 latest tests. Maximum is 100\% and minimum is 0\%.</string>
+    <string name="tvStatInstruction">Below is the performance of your 5 latest tests. Maximum is 100\% and minimum is 0\%.</string>
     <string name="btnTestsLog">Tests Log</string>
     <string name="btnQuestionsLog">Questions Log</string>
     <string name="switchSound">Sound</string>
+    <string name="xOfx">%1$d of %2$d</string>
 
 </resources>
