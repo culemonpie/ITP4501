@@ -16,6 +16,7 @@ public class EndGameActivity extends AppCompatActivity {
     int numberOfQuestions;
     int timeSpent;
     String timeSpentToString;
+    float averageTimeToString;
 
     TextView tvEndGame;
 
@@ -34,7 +35,8 @@ public class EndGameActivity extends AppCompatActivity {
         correctAnswers = data.getIntExtra("correctAnswers" , 0);
         timeSpent = data.getIntExtra("timeSpent", 0);
         timeSpentToString = String.format("%02d:%02d", timeSpent/60, timeSpent%60);
-        String tvEndGameMessage = getResources().getString(R.string.gameFinished, correctAnswers, numberOfQuestions, timeSpentToString);
+        averageTimeToString = (float)(1.0 * timeSpent / numberOfQuestions);
+        String tvEndGameMessage = getResources().getString(R.string.gameFinished, correctAnswers, numberOfQuestions, timeSpentToString, averageTimeToString);
 
         tvEndGame.setText(tvEndGameMessage);
 

@@ -11,7 +11,7 @@
     <string name="imReady">I\'m ready</string>
     <string name="Loading">Loading...</string>
     <string name="tvReady">Please click the I\'m ready button to start!</string>
-    <string name="gameFinished">You have answered %1$d out of %2$d questions correctly!\n\nTime Spent: %3$s</string>
+    <string name="gameFinished">You have answered %1$d out of %2$d questions correctly!\n\nTotal Time Spent\n%3$s\n\nAverage time spent on each question\n%4$.1f seconds</string>
     <string name="tvNumQuestions">Number of Questions (2 - 10)</string>
     <string name="menuExit">Exit</string>
     <string name="tvStatInstruction">Below is the performance of your 10 latest tests. Maximum is 100\% and minimum is 0\%.</string>

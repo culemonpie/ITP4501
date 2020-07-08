@@ -1,13 +1,17 @@
 package com.exercise.ea4513;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,10 +24,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Init Database
+        Locale hk = new Locale("zh_HK");
+        Locale.setDefault(hk);
+
+        Configuration config = getBaseContext().getResources().getConfiguration();
+        config.locale = hk;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
+        Log.d("Locale", Locale.getDefault().toLanguageTag());
 
         try{
             db = SQLiteDatabase.openDatabase(DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+
 //            qs = "DROP TABLE IF EXISTS TestsLog;";
 //            db.execSQL(qs);
 //            qs = "DROP TABLE IF EXISTS QuestionsLog;";
@@ -50,33 +63,12 @@ public class MainActivity extends AppCompatActivity {
                     ");";
             db.execSQL(qs);
 
-//            String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-//            String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
-//            Cursor cursor;
-//            String[] args = {date, time, "5", "3" + ""};
-//            qs = "INSERT INTO TestsLog(testDate, time, duration, correctCount) VALUES (?, ?, ?, ?);";
-//            Log.d("MyDB", qs);
-//
-////            db.execSQL(qs, args);
-//
-//            qs = "SELECT count(*) as c from TestsLog";
-//            cursor = db.rawQuery(qs, null);
-//            cursor.moveToFirst();
-//
-//            Log.d("MyDB", "Number of rows = " + cursor.getInt(cursor.getColumnIndex("c")));
-//
-//            qs = "SELECT * FROM TestsLog order by testNo desc Limit 1;";
-//            cursor = db.rawQuery(qs, null);
-//            cursor.moveToFirst();
-//            Log.d("MyDB", qs);
-//
-//            Log.d("MyDB", cursor.getString(0));
-//            Log.d("MyDB", cursor.getString(2));
-
             db.close();
         } catch(SQLiteException e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
+
 
     }
 
@@ -98,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         Intent howToPlayIntent = new Intent(this, Settings.class);
         startActivity(howToPlayIntent);
     }
-
 
 
 }
